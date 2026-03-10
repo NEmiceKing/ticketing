@@ -15,9 +15,8 @@ EVENTS = [
         "venue": "Hong Kong Coliseum",
         "price": 880,
         "category": "Concerts",
-        "emoji": "🎤",
-        "status": "active",
-        "image": "concert.jpg"
+        "image": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400",
+        "status": "active"
     },
     {
         "id": 2,
@@ -26,9 +25,8 @@ EVENTS = [
         "venue": "Central Harbourfront",
         "price": 980,
         "category": "Concerts",
-        "emoji": "🎸",
-        "status": "active",
-        "image": "concert.jpg"
+        "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400",
+        "status": "active"
     },
     {
         "id": 3,
@@ -37,9 +35,38 @@ EVENTS = [
         "venue": "Hong Kong Arts Centre",
         "price": 680,
         "category": "Theater",
-        "emoji": "🐱",
-        "status": "active",
-        "image": "theater.jpg"
+        "image": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=400",
+        "status": "active"
+    },
+    {
+        "id": 4,
+        "title": "HK Rugby Sevens 2026",
+        "date": "Apr 05, 2026",
+        "venue": "Hong Kong Stadium",
+        "price": 450,
+        "category": "Sports",
+        "image": "https://images.unsplash.com/photo-1461896836934- voices-1f3e1a?w=400",
+        "status": "active"
+    },
+    {
+        "id": 5,
+        "title": "Swan Lake Ballet",
+        "date": "May 10, 2026",
+        "venue": "Hong Kong Cultural Centre",
+        "price": 580,
+        "category": "Classical",
+        "image": "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=400",
+        "status": "active"
+    },
+    {
+        "id": 6,
+        "title": "Eason Chan Concert 2026",
+        "date": "Jun 01, 2026",
+        "venue": "Hong Kong Arena",
+        "price": 880,
+        "category": "Concerts",
+        "image": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=400",
+        "status": "active"
     }
 ]
 

@@ -273,7 +273,7 @@
                     {% for event in events %}
                     <tr>
                         <td>
-                            <div class="image-preview" onclick="editImage({{ event.id }})">{{ event.emoji }}</div>
+                            <div class="image-preview" onclick="editImage({{ event.id }})" style="background-image: url('{{ event.image }}'); background-size: cover; background-position: center;"></div>
                         </td>
                         <td>{{ event.title }}</td>
                         <td>HK$ {{ event.price }}</td>
@@ -329,10 +329,16 @@
                 <h2>Edit Event Image</h2>
                 <button class="close-btn" onclick="closeImageModal()">&times;</button>
             </div>
-            <div class="image-upload-area" onclick="document.getElementById('emojiInput').click()">
-                <div id="emojiPreview" style="font-size: 60px;">🎫</div>
-                <p style="margin-top:10px;color:#666;">Click to change emoji icon</p>
-                <input type="file" id="emojiInput" accept="image/*" style="display:none" onchange="handleEmojiChange(this)">
+            <div class="form-group">
+                <label>Image URL (or leave empty for default)</label>
+                <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="image-upload-area" id="imagePreviewArea" onclick="document.getElementById('imageFileInput').click()">
+                <div id="imagePreviewContent" style="font-size: 14px; color: #666;">
+                    <p>Click to upload image file</p>
+                    <p style="font-size: 12px; color: #999;">or use URL above</p>
+                </div>
+                <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageFileChange(this)">
             </div>
             <input type="hidden" id="editEventId">
             <div class="btn-row-modal">
@@ -362,6 +368,8 @@
         // Image edit
         function editImage(id) {
             document.getElementById('editEventId').value = id;
+            document.getElementById('imageUrlInput').value = '';
+            document.getElementById('imagePreviewContent').innerHTML = '<p>Click to upload image file</p><p style="font-size: 12px; color: #999;">or use URL above</p>';
             document.getElementById('imageModal').classList.add('show');
         }
         
@@ -369,11 +377,12 @@
             document.getElementById('imageModal').classList.remove('show');
         }
         
-        function handleEmojiChange(input) {
+        function handleImageFileChange(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('emojiPreview').innerHTML = `<img src="${e.target.result}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">`;
+                    document.getElementById('imagePreviewContent').innerHTML = `<img src="${e.target.result}" style="width:100%;max-height:150px;object-fit:contain;border-radius:8px;">`;
+                    document.getElementById('imageUrlInput').value = e.target.result;
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -381,10 +390,10 @@
         
         async function saveImage() {
             const eventId = document.getElementById('editEventId').value;
-            const emojiInput = document.getElementById('emojiInput');
+            const imageUrl = document.getElementById('imageUrlInput').value;
             
-            // For now, just show success - in production, upload image to server
-            alert('Image updated!');
+            // In production, save to server
+            alert('Image URL saved: ' + imageUrl);
             closeImageModal();
             location.reload();
         }
