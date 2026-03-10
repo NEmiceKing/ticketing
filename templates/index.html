@@ -436,13 +436,12 @@
                 </div>
             </div>
             <nav>
-                <a href="#" class="active">Home</a>
-                <a href="#">Concerts</a>
-                <a href="#">Theater</a>
-                <a href="#">Sports</a>
-                <a href="#">Classical</a>
-                <a href="#">Family</a>
-                <a href="#">My Tickets</a>
+                <a href="#" class="active" data-category="All" onclick="filterByNav(this)">Home</a>
+                <a href="#" data-category="Concerts" onclick="filterByNav(this)">Concerts</a>
+                <a href="#" data-category="Theater" onclick="filterByNav(this)">Theater</a>
+                <a href="#" data-category="Sports" onclick="filterByNav(this)">Sports</a>
+                <a href="#" data-category="Classical" onclick="filterByNav(this)">Classical</a>
+                <a href="#" data-category="Family" onclick="filterByNav(this)">Family</a>
             </nav>
         </div>
     </header>
@@ -616,7 +615,7 @@
             `).join('');
         }
         
-        // Category filter
+        // Category filter (from category buttons)
         document.querySelectorAll('.category').forEach(cat => {
             cat.addEventListener('click', function() {
                 document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
@@ -624,6 +623,25 @@
                 renderEvents(this.textContent);
             });
         });
+        
+        // Nav filter function
+        function filterByNav(element) {
+            event.preventDefault();
+            const category = element.getAttribute('data-category');
+            
+            // Update nav active state
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update category buttons
+            document.querySelectorAll('.category').forEach(c => {
+                c.classList.remove('active');
+                if (c.textContent === category) c.classList.add('active');
+            });
+            
+            // Filter events
+            renderEvents(category);
+        }
         
         // Modal functions
         function openTicketModal(eventId) {
