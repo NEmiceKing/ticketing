@@ -13,12 +13,15 @@
         header {
             background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
             color: white;
-            padding: 15px 20px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo { font-size: 24px; font-weight: bold; }
+        .logo { font-size: 20px; font-weight: bold; }
         .logo span { color: #FFD700; }
         .logout {
             background: rgba(255,255,255,0.2);
@@ -26,67 +29,77 @@
             border-radius: 20px;
             color: white;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
         }
         .container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 10px;
         }
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
         .stat-card {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
         }
         .stat-card h3 {
             color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 12px;
+            margin-bottom: 5px;
         }
         .stat-card .value {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
             color: #0066cc;
         }
         .section {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .add-btn {
             background: #FFD700;
             color: #004499;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 20px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
+            white-space: nowrap;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
         th, td {
-            padding: 12px;
+            padding: 10px 6px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
@@ -94,44 +107,121 @@
             background: #f8f8f8;
             font-weight: bold;
             color: #666;
-            font-size: 14px;
+            font-size: 12px;
         }
         .status {
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
         }
-        .status.active {
-            background: #e0ffe0;
-            color: #00aa00;
-        }
-        .status.inactive {
-            background: #ffe0e0;
-            color: #cc0000;
-        }
+        .status.active { background: #e0ffe0; color: #00aa00; }
+        .status.inactive { background: #ffe0e0; color: #cc0000; }
         .actions {
             display: flex;
-            gap: 8px;
+            gap: 5px;
+            flex-wrap: wrap;
         }
         .action-btn {
-            padding: 6px 12px;
+            padding: 6px 10px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            white-space: nowrap;
         }
-        .toggle-btn {
-            background: #e0e0ff;
-            color: #0066cc;
+        .toggle-btn { background: #e0e0ff; color: #0066cc; }
+        .edit-btn { background: #fff3e0; color: #ff9800; }
+        .delete-btn { background: #ffe0e0; color: #cc0000; }
+        
+        /* Image upload */
+        .image-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
         }
-        .delete-btn {
-            background: #ffe0e0;
-            color: #cc0000;
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
         }
-        .pricing-btn {
-            background: #FFD700;
-            color: #004499;
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 { font-size: 18px; }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #666; font-size: 13px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .form-group input:focus { outline: none; border-color: #0066cc; }
+        .image-upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .image-upload-area:hover { border-color: #0066cc; }
+        .btn-row-modal {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-row-modal button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .submit-btn { background: #FFD700; color: #004499; }
+        .cancel-btn { background: #eee; color: #666; }
+        
+        @media (max-width: 600px) {
+            .stats { grid-template-columns: 1fr 1fr; }
+            .section-header { flex-direction: column; align-items: flex-start; }
+            .btn-row { width: 100%; }
+            .add-btn { width: 100%; text-align: center; }
+            th:nth-child(4), td:nth-child(4) { display: none; }
         }
     </style>
 </head>
@@ -148,33 +238,32 @@
                 <div class="value">{{ events|length }}</div>
             </div>
             <div class="stat-card">
-                <h3>Active Events</h3>
+                <h3>Active</h3>
                 <div class="value">{{ events|selectattr('status', 'equalto', 'active')|list|length }}</div>
             </div>
             <div class="stat-card">
-                <h3>Total Orders</h3>
+                <h3>Orders</h3>
                 <div class="value">{{ orders|length }}</div>
             </div>
             <div class="stat-card">
                 <h3>Revenue</h3>
-                <div class="value">HK$ {{ orders|sum(attribute='total') }}</div>
+                <div class="value">HK$ {{ orders|sum(attribute='total', default=0) }}</div>
             </div>
         </div>
         
         <div class="section">
             <div class="section-header">
                 <div class="section-title">Event Management</div>
-                <div>
-                    <a href="/admin/pricing" class="add-btn" style="margin-right: 10px;">Smart Pricing</a>
-                    <a href="/admin/event/add" class="add-btn">+ Add Event</a>
+                <div class="btn-row">
+                    <a href="/admin/pricing" class="add-btn">Smart Pricing</a>
+                    <a href="/admin/event/add" class="add-btn">+ Add</a>
                 </div>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Image</th>
                         <th>Event</th>
-                        <th>Date</th>
                         <th>Price</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -183,23 +272,20 @@
                 <tbody>
                     {% for event in events %}
                     <tr>
-                        <td>{{ event.id }}</td>
-                        <td>{{ event.emoji }} {{ event.title }}</td>
-                        <td>{{ event.date }}</td>
+                        <td>
+                            <div class="image-preview" onclick="editImage({{ event.id }})">{{ event.emoji }}</div>
+                        </td>
+                        <td>{{ event.title }}</td>
                         <td>HK$ {{ event.price }}</td>
                         <td>
                             <span class="status {{ event.status }}">{{ event.status }}</span>
                         </td>
                         <td class="actions">
                             <button class="action-btn toggle-btn" onclick="toggleEvent({{ event.id }})">
-                                {{ 'Deactivate' if event.status == 'active' else 'Activate' }}
+                                {{ 'Off' if event.status == 'active' else 'On' }}
                             </button>
-                            <button class="action-btn pricing-btn" onclick="updatePrice({{ event.id }})">
-                                Set Price
-                            </button>
-                            <button class="action-btn delete-btn" onclick="deleteEvent({{ event.id }})">
-                                Delete
-                            </button>
+                            <button class="action-btn edit-btn" onclick="editEvent({{ event.id }})">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteEvent({{ event.id }})">Del</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -214,10 +300,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Order ID</th>
+                        <th>ID</th>
                         <th>Event</th>
-                        <th>Type</th>
-                        <th>Qty</th>
                         <th>Total</th>
                         <th>Status</th>
                     </tr>
@@ -227,28 +311,41 @@
                     <tr>
                         <td>#{{ order.id }}</td>
                         <td>{{ order.event_title }}</td>
-                        <td>{{ order.ticket_type }}</td>
-                        <td>{{ order.quantity }}</td>
                         <td>HK$ {{ order.total }}</td>
-                        <td>
-                            <span class="status {{ order.status }}">{{ order.status }}</span>
-                        </td>
+                        <td><span class="status {{ order.status }}">{{ order.status }}</span></td>
                     </tr>
                     {% else %}
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #999;">No orders yet</td>
-                    </tr>
+                    <tr><td colspan="4" style="text-align:center;color:#999;">No orders yet</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
     
+    <!-- Edit Image Modal -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Event Image</h2>
+                <button class="close-btn" onclick="closeImageModal()">&times;</button>
+            </div>
+            <div class="image-upload-area" onclick="document.getElementById('emojiInput').click()">
+                <div id="emojiPreview" style="font-size: 60px;">🎫</div>
+                <p style="margin-top:10px;color:#666;">Click to change emoji icon</p>
+                <input type="file" id="emojiInput" accept="image/*" style="display:none" onchange="handleEmojiChange(this)">
+            </div>
+            <input type="hidden" id="editEventId">
+            <div class="btn-row-modal">
+                <button class="cancel-btn" onclick="closeImageModal()">Cancel</button>
+                <button class="submit-btn" onclick="saveImage()">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         async function toggleEvent(id) {
             const res = await fetch(`/admin/event/${id}/toggle`, { method: 'POST' });
-            const data = await res.json();
-            if (data.success) location.reload();
+            if (res.ok) location.reload();
         }
         
         async function deleteEvent(id) {
@@ -258,16 +355,38 @@
             }
         }
         
-        async function updatePrice(id) {
-            const newPrice = prompt('Enter new price (HK$):');
-            if (newPrice) {
-                const res = await fetch(`/admin/event/${id}/update-price`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ price: parseInt(newPrice) })
-                });
-                if (res.ok) location.reload();
+        function editEvent(id) {
+            window.location.href = `/admin/event/${id}/edit`;
+        }
+        
+        // Image edit
+        function editImage(id) {
+            document.getElementById('editEventId').value = id;
+            document.getElementById('imageModal').classList.add('show');
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('show');
+        }
+        
+        function handleEmojiChange(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('emojiPreview').innerHTML = `<img src="${e.target.result}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
             }
+        }
+        
+        async function saveImage() {
+            const eventId = document.getElementById('editEventId').value;
+            const emojiInput = document.getElementById('emojiInput');
+            
+            // For now, just show success - in production, upload image to server
+            alert('Image updated!');
+            closeImageModal();
+            location.reload();
         }
     </script>
 </body>

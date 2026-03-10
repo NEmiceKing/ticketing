@@ -124,6 +124,38 @@ def delete_event(event_id):
     EVENTS = [e for e in EVENTS if e['id'] != event_id]
     return jsonify({"success": True})
 
+@app.route('/admin/event/<int:event_id>/edit', methods=['GET', 'POST'])
+def edit_event(event_id):
+    if not session.get('admin_logged_in'):
+        return redirect('/admin')
+    
+    event = next((e for e in EVENTS if e['id'] == event_id), None)
+    if not event:
+        return "Event not found", 404
+    
+    if request.method == 'POST':
+        event['title'] = request.form.get('title')
+        event['date'] = request.form.get('date')
+        event['venue'] = request.form.get('venue')
+        event['price'] = int(request.form.get('price'))
+        event['category'] = request.form.get('category')
+        return redirect('/admin/dashboard')
+    
+    return render_template('edit_event.html', event=event)
+
+@app.route('/admin/event/<int:event_id>/update-image', methods=['POST'])
+def update_event_image(event_id):
+    if not session.get('admin_logged_in'):
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    for event in EVENTS:
+        if event['id'] == event_id:
+            # In production, save image to disk and update path
+            event['emoji'] = request.form.get('emoji', event.get('emoji', '🎫'))
+            return jsonify({"success": True, "emoji": event['emoji']})
+    
+    return jsonify({"error": "Event not found"}), 404
+
 # Smart Pricing
 @app.route('/admin/pricing')
 def smart_pricing():
