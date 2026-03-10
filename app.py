@@ -78,7 +78,16 @@ def admin_logout():
 def admin_dashboard():
     if not session.get('admin_logged_in'):
         return redirect('/admin')
-    return render_template('admin_dashboard.html', events=EVENTS, orders=ORDERS)
+    
+    # Calculate stats in Python
+    active_count = sum(1 for e in EVENTS if e.get('status') == 'active')
+    revenue = sum(o.get('total', 0) for o in ORDERS)
+    
+    return render_template('admin_dashboard.html', 
+                          events=EVENTS, 
+                          orders=ORDERS,
+                          active_count=active_count,
+                          revenue=revenue)
 
 # Event Management
 @app.route('/admin/event/add', methods=['GET', 'POST'])

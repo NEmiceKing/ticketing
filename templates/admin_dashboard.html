@@ -239,7 +239,7 @@
             </div>
             <div class="stat-card">
                 <h3>Active</h3>
-                <div class="value">{{ events|selectattr('status', 'equalto', 'active')|list|length }}</div>
+                <div class="value">{{ active_count }}</div>
             </div>
             <div class="stat-card">
                 <h3>Orders</h3>
@@ -247,7 +247,7 @@
             </div>
             <div class="stat-card">
                 <h3>Revenue</h3>
-                <div class="value">HK$ {{ orders|sum(attribute='total', default=0) }}</div>
+                <div class="value">HK$ {{ revenue }}</div>
             </div>
         </div>
         
