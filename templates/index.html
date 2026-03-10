@@ -49,17 +49,39 @@
             color: white;
         }
         
-        .user-area {
+        .header-right {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
         }
         
-        .user-btn {
+        .lang-switch {
+            display: flex;
             background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .lang-btn {
             padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 13px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
             cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .lang-btn.active {
+            background: #FFD700;
+            color: #004499;
+            font-weight: bold;
+        }
+        
+        .user-area a {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
         }
         
         nav {
@@ -82,6 +104,7 @@
             white-space: nowrap;
             border-radius: 20px;
             transition: all 0.2s;
+            cursor: pointer;
         }
         
         nav a:hover, nav a.active {
@@ -122,36 +145,9 @@
             cursor: pointer;
         }
         
-        /* Categories */
+        /* Categories - Hidden, using nav instead */
         .categories {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .categories::-webkit-scrollbar {
             display: none;
-        }
-        
-        .category {
-            background: white;
-            padding: 10px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            white-space: nowrap;
-            font-size: 14px;
-        }
-        
-        .category:hover, .category.active {
-            border-color: #FFD700;
-            background: #FFFEF0;
-            color: #0066cc;
         }
         
         /* Events Grid */
@@ -422,6 +418,11 @@
                 height: auto;
                 min-height: 100px;
             }
+            
+            .lang-btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
@@ -431,17 +432,19 @@
         <div class="header-content">
             <div class="top-bar">
                 <div class="logo">Tickety<span></span></div>
-                <div class="user-area">
-                    <a href="/admin" style="color: white; text-decoration: none; font-size: 13px;">Admin</a>
+                <div class="header-right">
+                    <div class="lang-switch">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="zh-TW">繁</button>
+                        <button class="lang-btn" data-lang="zh-CN">简</button>
+                    </div>
+                    <div class="user-area">
+                        <a href="/admin">Admin</a>
+                    </div>
                 </div>
             </div>
-            <nav>
-                <a href="#" class="active" data-category="All" onclick="filterByNav(this)">Home</a>
-                <a href="#" data-category="Concerts" onclick="filterByNav(this)">Concerts</a>
-                <a href="#" data-category="Theater" onclick="filterByNav(this)">Theater</a>
-                <a href="#" data-category="Sports" onclick="filterByNav(this)">Sports</a>
-                <a href="#" data-category="Classical" onclick="filterByNav(this)">Classical</a>
-                <a href="#" data-category="Family" onclick="filterByNav(this)">Family</a>
+            <nav id="mainNav">
+                <!-- Nav items will be inserted by JS -->
             </nav>
         </div>
     </header>
@@ -449,24 +452,14 @@
     <!-- Search -->
     <div class="search-section">
         <div class="search-box">
-            <input type="text" placeholder="Search events, artists, venues...">
-            <button>Search</button>
+            <input type="text" id="searchInput" placeholder="Search events, artists, venues...">
+            <button onclick="doSearch()">Search</button>
         </div>
     </div>
     
-    <!-- Categories -->
-    <div class="categories">
-        <div class="category active">All</div>
-        <div class="category">Concerts</div>
-        <div class="category">Theater</div>
-        <div class="category">Sports</div>
-        <div class="category">Classical</div>
-        <div class="category">Family</div>
-    </div>
-    
-    <!-- Hot Events -->
+    <!-- Events Section -->
     <div class="events-section">
-        <div class="section-title">Trending Events</div>
+        <div class="section-title" id="sectionTitle">Trending Events</div>
         <div class="events-grid" id="eventsGrid">
             <!-- Events will be inserted here -->
         </div>
@@ -476,19 +469,19 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About Us</h3>
-                <a href="#">Company</a>
-                <a href="#">Contact</a>
-                <a href="#">Careers</a>
+                <h3 id="footerAbout">About Us</h3>
+                <a href="#" id="footerCompany">Company</a>
+                <a href="#" id="footerContact">Contact</a>
+                <a href="#" id="footerCareers">Careers</a>
             </div>
             <div class="footer-section">
-                <h3>Customer Service</h3>
-                <a href="#">Help Center</a>
-                <a href="#">FAQ</a>
-                <a href="#">Refund Policy</a>
+                <h3 id="footerService">Customer Service</h3>
+                <a href="#" id="footerHelp">Help Center</a>
+                <a href="#" id="footerFAQ">FAQ</a>
+                <a href="#" id="footerRefund">Refund Policy</a>
             </div>
             <div class="footer-section">
-                <h3>Follow Us</h3>
+                <h3 id="footerFollow">Follow Us</h3>
                 <a href="#">Facebook</a>
                 <a href="#">Instagram</a>
                 <a href="#">Twitter</a>
@@ -509,91 +502,130 @@
                 <!-- Ticket options will be inserted here -->
             </div>
             
-            <button class="checkout-btn" onclick="checkout()">Buy Tickets</button>
+            <button class="checkout-btn" onclick="checkout()" id="buyBtn">Buy Tickets</button>
         </div>
     </div>
 
     <script>
+        // Translations
+        const translations = {
+            en: {
+                navHome: "Home", navConcerts: "Concerts", navTheater: "Theater", navSports: "Sports", navClassical: "Classical", navFamily: "Family",
+                trending: "Trending Events", searchPlaceholder: "Search events, artists, venues...",
+                buy: "Buy", from: "from", standard: "Standard", vip: "VIP", premium: "Premium",
+                buyTickets: "Buy Tickets", thankYou: "Thank you! Your order has been placed.",
+                footerAbout: "About Us", footerCompany: "Company", footerContact: "Contact", footerCareers: "Careers",
+                footerService: "Customer Service", footerHelp: "Help Center", footerFAQ: "FAQ", footerRefund: "Refund Policy",
+                footerFollow: "Follow Us"
+            },
+            "zh-TW": {
+                navHome: "首頁", navConcerts: "演唱會", navTheater: "話劇", navSports: "體育", navClassical: "古典", navFamily: "親子",
+                trending: "熱門活動", searchPlaceholder: "搜尋活動、藝術家、場館...",
+                buy: "購票", from: "起", standard: "標準票", vip: "貴賓票", premium: "尊貴票",
+                buyTickets: "立即購票", thankYou: "感謝您的購買！訂單已確認。",
+                footerAbout: "關於我們", footerCompany: "公司簡介", footerContact: "聯絡我們", footerCareers: "招聘資訊",
+                footerService: "客戶服務", footerHelp: "幫助中心", footerFAQ: "常見問題", footerRefund: "退票政策",
+                footerFollow: "關注我們"
+            },
+            "zh-CN": {
+                navHome: "首页", navConcerts: "演唱会", navTheater: "话剧", navSports: "体育", navClassical: "古典", navFamily: "亲子",
+                trending: "热门活动", searchPlaceholder: "搜索活动、艺术家、场馆...",
+                buy: "购票", from: "起", standard: "标准票", vip: "贵宾票", premium: "尊贵票",
+                buyTickets: "立即购票", thankYou: "感谢您的购买！订单已确认。",
+                footerAbout: "关于我们", footerCompany: "公司简介", footerContact: "联系我们", footerCareers: "招聘信息",
+                footerService: "客户服务", footerHelp: "帮助中心", footerFAQ: "常见问题", footerRefund: "退票政策",
+                footerFollow: "关注我们"
+            }
+        };
+        
+        let currentLang = 'en';
+        
         // Sample event data
         const events = [
-            {
-                id: 1,
-                title: "Jay Chou World Tour 2026",
-                date: "Apr 15, 2026",
-                venue: "Hong Kong Coliseum",
-                price: 880,
-                category: "Concerts",
-                emoji: "🎤"
-            },
-            {
-                id: 2,
-                title: "Mayday Noah's Ark Concert",
-                date: "Apr 20, 2026",
-                venue: "Central Harbourfront",
-                price: 980,
-                category: "Concerts",
-                emoji: "🎸"
-            },
-            {
-                id: 3,
-                title: "Cats - Original Musical",
-                date: "May 01, 2026",
-                venue: "Hong Kong Arts Centre",
-                price: 680,
-                category: "Theater",
-                emoji: "🐱"
-            },
-            {
-                id: 4,
-                title: "HK Rugby Sevens 2026",
-                date: "Apr 05, 2026",
-                venue: "Hong Kong Stadium",
-                price: 450,
-                category: "Sports",
-                emoji: "🏉"
-            },
-            {
-                id: 5,
-                title: "Swan Lake Ballet",
-                date: "May 10, 2026",
-                venue: "Hong Kong Cultural Centre",
-                price: 580,
-                category: "Classical",
-                emoji: "🦢"
-            },
-            {
-                id: 6,
-                title: "Eason Chan Concert 2026",
-                date: "Jun 01, 2026",
-                venue: "Hong Kong Arena",
-                price: 880,
-                category: "Concerts",
-                emoji: "🎤"
-            },
-            {
-                id: 7,
-                title: "The Pillowman - Drama",
-                date: "May 15, 2026",
-                venue: "Hong Kong Arts Centre",
-                price: 380,
-                category: "Theater",
-                emoji: "🎭"
-            },
-            {
-                id: 8,
-                title: "NBA China Games 2026",
-                date: "Jul 20, 2026",
-                venue: "Guangzhou Arena",
-                price: 1280,
-                category: "Sports",
-                emoji: "🏀"
-            }
+            { id: 1, title: "Jay Chou World Tour 2026", date: "Apr 15, 2026", venue: "Hong Kong Coliseum", price: 880, category: "Concerts", emoji: "🎤" },
+            { id: 2, title: "Mayday Noah's Ark Concert", date: "Apr 20, 2026", venue: "Central Harbourfront", price: 980, category: "Concerts", emoji: "🎸" },
+            { id: 3, title: "Cats - Original Musical", date: "May 01, 2026", venue: "Hong Kong Arts Centre", price: 680, category: "Theater", emoji: "🐱" },
+            { id: 4, title: "HK Rugby Sevens 2026", date: "Apr 05, 2026", venue: "Hong Kong Stadium", price: 450, category: "Sports", emoji: "🏉" },
+            { id: 5, title: "Swan Lake Ballet", date: "May 10, 2026", venue: "Hong Kong Cultural Centre", price: 580, category: "Classical", emoji: "🦢" },
+            { id: 6, title: "Eason Chan Concert 2026", date: "Jun 01, 2026", venue: "Hong Kong Arena", price: 880, category: "Concerts", emoji: "🎤" },
+            { id: 7, title: "The Pillowman - Drama", date: "May 15, 2026", venue: "Hong Kong Arts Centre", price: 380, category: "Theater", emoji: "🎭" },
+            { id: 8, title: "NBA China Games 2026", date: "Jul 20, 2026", venue: "Guangzhou Arena", price: 1280, category: "Sports", emoji: "🏀" }
         ];
         
-        let selectedEvent = null;
+        // Category mapping
+        const categoryMap = {
+            "Concerts": { en: "Concerts", "zh-TW": "演唱會", "zh-CN": "演唱会" },
+            "Theater": { en: "Theater", "zh-TW": "話劇", "zh-CN": "话剧" },
+            "Sports": { en: "Sports", "zh-TW": "體育", "zh-CN": "体育" },
+            "Classical": { en: "Classical", "zh-TW": "古典", "zh-CN": "古典" },
+            "Family": { en: "Family", "zh-TW": "親子", "zh-CN": "亲子" }
+        };
         
-        // Render events
+        let selectedEvent = null;
+        let currentCategory = 'All';
+        
+        // Language switch
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentLang = this.getAttribute('data-lang');
+                updateLanguage();
+            });
+        });
+        
+        function updateLanguage() {
+            const t = translations[currentLang];
+            
+            // Update nav
+            renderNav();
+            
+            // Update section title
+            document.getElementById('sectionTitle').textContent = t.trending;
+            
+            // Update search
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            
+            // Update footer
+            document.getElementById('footerAbout').textContent = t.footerAbout;
+            document.getElementById('footerCompany').textContent = t.footerCompany;
+            document.getElementById('footerContact').textContent = t.footerContact;
+            document.getElementById('footerCareers').textContent = t.footerCareers;
+            document.getElementById('footerService').textContent = t.footerService;
+            document.getElementById('footerHelp').textContent = t.footerHelp;
+            document.getElementById('footerFAQ').textContent = t.footerFAQ;
+            document.getElementById('footerRefund').textContent = t.footerRefund;
+            document.getElementById('footerFollow').textContent = t.footerFollow;
+            
+            // Re-render events
+            renderEvents(currentCategory);
+            
+            // Update buy button if modal open
+            if (selectedEvent) {
+                document.getElementById('buyBtn').textContent = t.buyTickets;
+            }
+        }
+        
+        function renderNav() {
+            const t = translations[currentLang];
+            const navItems = [
+                { key: 'All', label: t.navHome },
+                { key: 'Concerts', label: t.navConcerts },
+                { key: 'Theater', label: t.navTheater },
+                { key: 'Sports', label: t.navSports },
+                { key: 'Classical', label: t.navClassical },
+                { key: 'Family', label: t.navFamily }
+            ];
+            
+            const nav = document.getElementById('mainNav');
+            nav.innerHTML = navItems.map(item => 
+                `<a href="#" class="${item.key === currentCategory ? 'active' : ''}" 
+                   data-category="${item.key}" onclick="filterByNav(this)">${item.label}</a>`
+            ).join('');
+        }
+        
         function renderEvents(category = 'All') {
+            const t = translations[currentLang];
             const grid = document.getElementById('eventsGrid');
             const filtered = category === 'All' ? events : events.filter(e => e.category === category);
             
@@ -607,55 +639,68 @@
                         <div class="event-title">${event.title}</div>
                         <div class="event-venue">${event.venue}</div>
                         <div class="event-footer">
-                            <div class="price">HK$ ${event.price} <span>from</span></div>
-                            <button class="buy-btn">Buy</button>
+                            <div class="price">HK$ ${event.price} <span>${t.from}</span></div>
+                            <button class="buy-btn">${t.buy}</button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
         
-        // Category filter (from category buttons)
-        document.querySelectorAll('.category').forEach(cat => {
-            cat.addEventListener('click', function() {
-                document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                renderEvents(this.textContent);
-            });
-        });
-        
-        // Nav filter function
         function filterByNav(element) {
             event.preventDefault();
             const category = element.getAttribute('data-category');
+            currentCategory = category;
             
-            // Update nav active state
-            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('#mainNav a').forEach(a => a.classList.remove('active'));
             element.classList.add('active');
             
-            // Update category buttons
-            document.querySelectorAll('.category').forEach(c => {
-                c.classList.remove('active');
-                if (c.textContent === category) c.classList.add('active');
-            });
-            
-            // Filter events
             renderEvents(category);
         }
         
-        // Modal functions
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = events.filter(e => 
+                e.title.toLowerCase().includes(query) || 
+                e.venue.toLowerCase().includes(query)
+            );
+            
+            const t = translations[currentLang];
+            document.getElementById('sectionTitle').textContent = 'Search Results';
+            
+            const grid = document.getElementById('eventsGrid');
+            grid.innerHTML = filtered.map(event => `
+                <div class="event-card" onclick="openTicketModal(${event.id})">
+                    <div class="event-image">
+                        ${event.emoji}
+                        <div class="event-date-badge">${event.date.split(',')[0]}</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-venue">${event.venue}</div>
+                        <div class="event-footer">
+                            <div class="price">HK$ ${event.price} <span>${t.from}</span></div>
+                            <button class="buy-btn">${t.buy}</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
         function openTicketModal(eventId) {
             selectedEvent = events.find(e => e.id === eventId);
             if (!selectedEvent) return;
             
+            const t = translations[currentLang];
+            
             document.getElementById('modalTitle').textContent = selectedEvent.title;
             document.getElementById('modalVenue').textContent = `${selectedEvent.date} | ${selectedEvent.venue}`;
+            document.getElementById('buyBtn').textContent = t.buyTickets;
             
-            // Generate ticket options
             const prices = [
-                { name: 'Standard', price: selectedEvent.price },
-                { name: 'VIP', price: selectedEvent.price * 1.5 },
-                { name: 'Premium', price: selectedEvent.price * 2 }
+                { name: t.standard, price: selectedEvent.price },
+                { name: t.vip, price: selectedEvent.price * 1.5 },
+                { name: t.premium, price: selectedEvent.price * 2 }
             ];
             
             document.getElementById('ticketOptions').innerHTML = prices.map((p, i) => `
@@ -678,16 +723,17 @@
         }
         
         function checkout() {
-            alert('Thank you! Your order has been placed.');
+            const t = translations[currentLang];
+            alert(t.thankYou);
             closeModal();
         }
         
-        // Close modal when clicking outside
         document.getElementById('ticketModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
         
         // Initial render
+        renderNav();
         renderEvents();
     </script>
 </body>
