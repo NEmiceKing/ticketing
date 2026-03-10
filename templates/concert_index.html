@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickety - High Concurrency Ticket Booking</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            text-align: center;
+        }
+        .logo { font-size: 32px; font-weight: bold; color: #FFD700; }
+        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        
+        .rush-banner {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .rush-banner h2 { margin-bottom: 10px; }
+        .rush-banner p { opacity: 0.9; }
+        
+        .event-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .event-info h3 { font-size: 20px; margin-bottom: 8px; }
+        .event-info p { opacity: 0.7; font-size: 14px; }
+        
+        .ticket-stats {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .buy-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .quantity-select {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .buy-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .buy-btn:hover { transform: scale(1.05); }
+        .buy-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .result-modal.show { display: flex; }
+        .result-content {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .result-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .result-message { opacity: 0.7; margin-bottom: 20px; }
+        .result-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .queue-info {
+            background: rgba(255,215,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        .queue-info.show { display: block; }
+        
+        .live-stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        .live-stats h4 { color: #FFD700; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🎫 Tickety</div>
+    </header>
+    
+    <div class="live-stats">
+        <h4>📊 Live Stats</h4>
+        <div id="liveStats">Loading...</div>
+    </div>
+    
+    <div class="container">
+        <div class="rush-banner">
+            <h2>🔥 Flash Sale Now!</h2>
+            <p>Limited tickets available. Book now!</p>
+        </div>
+        
+        <div id="eventsList">
+            <p style="text-align:center;opacity:0.7;">Loading events...</p>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title" id="resultTitle">Success!</div>
+            <div class="result-message" id="resultMessage">You got the tickets!</div>
+            <button class="result-btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        
+        // Load events
+        async function loadEvents() {
+            try {
+                const res = await fetch('/api/events');
+                const events = await res.json();
+                
+                document.getElementById('eventsList').innerHTML = events.map(e => `
+                    <div class="event-card">
+                        <div class="event-info">
+                            <h3>${e.name}</h3>
+                            <div class="ticket-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${e.total}</div>
+                                    <div class="stat-label">Total</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value" style="color: ${e.available < 20 ? '#ff416c' : '#00ff88'}">${e.available}</div>
+                                    <div class="stat-label">Available</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${e.sold}</div>
+                                    <div class="stat-label">Sold</div>
+                                </div>
+                            </div>
+                            <div class="queue-info" id="queue_${e.id}"></div>
+                        </div>
+                        <div class="buy-section">
+                            <select class="quantity-select" id="qty_${e.id}">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button class="buy-btn" onclick="bookTicket(${e.id})" ${e.available === 0 ? 'disabled' : ''}>
+                                ${e.available === 0 ? 'Sold Out' : 'Buy Now'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update live stats
+                document.getElementById('liveStats').innerHTML = events.map(e => 
+                    `${e.name}: ${e.sold}/${e.total}`
+                ).join('<br>');
+                
+            } catch(e) {
+                console.error(e);
+            }
+        }
+        
+        async function bookTicket(eventId) {
+            const qty = document.getElementById(`qty_${eventId}`).value;
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Booking...';
+            
+            try {
+                const res = await fetch('/api/book', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        event_id: eventId,
+                        quantity: parseInt(qty),
+                        user_id: userId
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    showResult(true, data.message);
+                } else {
+                    showResult(false, data.message);
+                }
+                
+            } catch(e) {
+                showResult(false, 'Network error');
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Buy Now';
+            loadEvents();
+        }
+        
+        function showResult(success, message) {
+            document.getElementById('resultIcon').textContent = success ? '🎉' : '😢';
+            document.getElementById('resultTitle').textContent = success ? 'Success!' : 'Failed';
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('resultModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').classList.remove('show');
+            loadEvents();
+        }
+        
+        // Load initial data
+        loadEvents();
+        setInterval(loadEvents, 3000); // Refresh every 3 seconds
+    </script>
+</body>
+</html>

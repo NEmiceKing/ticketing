@@ -78,7 +78,7 @@ ADMIN_PASS = "tickety123"
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('concert_index.html')
 
 @app.route('/admin')
 def admin_login():
