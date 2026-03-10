@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event - Tickety Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 15px 20px;
+        }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { color: #FFD700; }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h2 { margin-bottom: 20px; color: #333; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #004499;
+        }
+        .cancel-btn {
+            background: #eee;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Tickety<span></span> Admin</div>
+    </header>
+    
+    <div class="container">
+        <div class="form-card">
+            <h2>Add New Event</h2>
+            <form method="POST" action="/admin/event/add">
+                <div class="form-group">
+                    <label>Event Title</label>
+                    <input type="text" name="title" placeholder="e.g., Jay Chou Concert 2026" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" name="date" placeholder="e.g., Apr 15, 2026" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Venue</label>
+                    <input type="text" name="venue" placeholder="e.g., Hong Kong Coliseum" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Price (HK$)</label>
+                    <input type="number" name="price" placeholder="880" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category">
+                        <option value="Concerts">Concerts</option>
+                        <option value="Theater">Theater</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Classical">Classical</option>
+                        <option value="Family">Family</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Emoji Icon</label>
+                    <input type="text" name="emoji" placeholder="🎤" value="🎫">
+                </div>
+                
+                <div class="btn-row">
+                    <button type="button" class="cancel-btn" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="submit-btn">Add Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Pricing - Tickety Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { color: #FFD700; }
+        .back {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        h2 { margin-bottom: 20px; color: #333; }
+        .intro {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .event-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .event-card {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .event-card:hover, .event-card.selected {
+            border-color: #FFD700;
+            background: #FFFEF0;
+        }
+        .event-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .event-info {
+            font-size: 13px;
+            color: #666;
+        }
+        .analyze-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #004499;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-card {
+            border: 2px solid #0066cc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .competitor-list {
+            margin: 15px 0;
+        }
+        .competitor-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .competitor-source {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .competitor-price {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .recommendation {
+            background: #e0ffe0;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+        .recommendation h3 {
+            color: #00aa00;
+            margin-bottom: 10px;
+        }
+        .recommendation .price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00aa00;
+        }
+        .apply-btn {
+            background: #00aa00;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Tickety<span></span> Admin</div>
+        <a href="/admin/dashboard" class="back">← Back to Dashboard</a>
+    </header>
+    
+    <div class="container">
+        <div class="section">
+            <h2>Smart Pricing</h2>
+            <p class="intro">
+                Analyze competitor prices from other ticketing platforms and get AI-powered pricing recommendations to maximize revenue while staying competitive.
+            </p>
+            
+            <h3>Select an event to analyze:</h3>
+            <div class="event-list" id="eventList">
+                {% for event in events %}
+                <div class="event-card" onclick="selectEvent({{ event.id }}, '{{ event.title }}', {{ event.price }})">
+                    <div class="event-title">{{ event.emoji }} {{ event.title }}</div>
+                    <div class="event-info">{{ event.date }} | Current: HK${{ event.price }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzePricing()" disabled>
+                Analyze Competitor Prices
+            </button>
+            
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedEventId = null;
+        let selectedEventTitle = '';
+        let selectedEventPrice = 0;
+        
+        function selectEvent(id, title, price) {
+            document.querySelectorAll('.event-card').forEach(c => c.classList.remove('selected'));
+            event.target.closest('.event-card').classList.add('selected');
+            selectedEventId = id;
+            selectedEventTitle = title;
+            selectedEventPrice = price;
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function analyzePricing() {
+            const btn = document.getElementById('analyzeBtn');
+            btn.textContent = 'Analyzing...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/scrape-prices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: selectedEventTitle })
+                });
+                
+                const data = await res.json();
+                
+                let html = `
+                    <div class="result-card">
+                        <h3>📊 Market Analysis: ${data.event}</h3>
+                        <p>${data.market_analysis}</p>
+                        
+                        <h4 style="margin: 15px 0;">Competitor Prices:</h4>
+                        <div class="competitor-list">
+                `;
+                
+                data.competitor_prices.forEach(p => {
+                    html += `
+                        <div class="competitor-item">
+                            <span class="competitor-source">${p.source}</span>
+                            <span class="competitor-price">HK$ ${p.price}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                        
+                        <div class="recommendation">
+                            <h3>💡 Recommended Price</h3>
+                            <div class="price">HK$ ${data.recommended_price}</div>
+                            <p style="margin-top: 10px; color: #666;">
+                                Current price: HK$ ${selectedEventPrice}<br>
+                                Suggested change: ${data.recommended_price > selectedEventPrice ? '+' : ''}${data.recommended_price - selectedEventPrice}
+                            </p>
+                            <button class="apply-btn" onclick="applyPrice(${data.recommended_price})">
+                                Apply Recommended Price
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('results').innerHTML = html;
+                
+            } catch (e) {
+                alert('Error analyzing prices');
+            }
+            
+            btn.textContent = 'Analyze Competitor Prices';
+            btn.disabled = false;
+        }
+        
+        async function applyPrice(price) {
+            const res = await fetch(`/admin/event/${selectedEventId}/update-price`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price })
+            });
+            
+            if (res.ok) {
+                alert(`Price updated to HK$ ${price}!`);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
