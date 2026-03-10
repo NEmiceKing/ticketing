@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>票票网 - 演唱会_话剧_体育赛事门票</title>
+    <title>Tickety - Concert_Tickets_Sports_Events</title>
     <style>
         * {
             margin: 0;
@@ -18,9 +18,9 @@
         
         /* Header */
         header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
             color: white;
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -29,228 +29,279 @@
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            margin-bottom: 10px;
         }
         
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            color: #ff6b6b;
+            color: #FFD700;
         }
         
         .logo span {
             color: white;
         }
         
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-        }
-        
-        nav a:hover {
-            color: #ff6b6b;
-        }
-        
-        .search-box {
+        .user-area {
             display: flex;
             gap: 10px;
         }
         
-        .search-box input {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 20px;
-            width: 250px;
-        }
-        
-        .search-box button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
+        .user-btn {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
             cursor: pointer;
         }
         
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 60px 20px;
-            text-align: center;
+        nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 8px 14px;
+            font-size: 14px;
+            white-space: nowrap;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.25);
             color: white;
         }
         
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 20px;
+        /* Search */
+        .search-section {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            padding: 25px 15px;
+            text-align: center;
         }
         
-        .hero p {
-            font-size: 18px;
-            opacity: 0.8;
+        .search-box {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .search-box button {
+            background: #FFD700;
+            color: #004499;
+            border: none;
+            padding: 12px 25px;
+            font-weight: bold;
+            cursor: pointer;
         }
         
         /* Categories */
         .categories {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 15px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 10px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .categories::-webkit-scrollbar {
+            display: none;
         }
         
         .category {
             background: white;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 10px 18px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
+            white-space: nowrap;
+            font-size: 14px;
         }
         
         .category:hover, .category.active {
-            border-color: #ff6b6b;
-            color: #ff6b6b;
+            border-color: #FFD700;
+            background: #FFFEF0;
+            color: #0066cc;
         }
         
         /* Events Grid */
         .events-section {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         
         .section-title {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-weight: bold;
         }
         
         .section-title::before {
             content: '';
-            width: 5px;
-            height: 25px;
-            background: #ff6b6b;
-            border-radius: 3px;
+            width: 4px;
+            height: 20px;
+            background: #FFD700;
+            border-radius: 2px;
         }
         
         .events-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
         
         .event-card {
             background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: transform 0.3s;
             cursor: pointer;
         }
         
         .event-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
         }
         
         .event-image {
-            height: 180px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 120px;
+            background: linear-gradient(135deg, #0066cc 0%, #FFD700 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 50px;
+            font-size: 40px;
+            position: relative;
+        }
+        
+        .event-date-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #FFD700;
+            color: #004499;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
         }
         
         .event-info {
-            padding: 20px;
-        }
-        
-        .event-date {
-            color: #ff6b6b;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 12px;
         }
         
         .event-title {
-            font-size: 18px;
-            margin: 10px 0;
+            font-size: 14px;
             font-weight: bold;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
         }
         
         .event-venue {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .event-price {
+        .event-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .price {
-            color: #ff6b6b;
-            font-size: 20px;
+            color: #0066cc;
+            font-size: 16px;
             font-weight: bold;
         }
         
         .price span {
-            font-size: 14px;
+            font-size: 11px;
             color: #999;
             font-weight: normal;
         }
         
         .buy-btn {
-            background: #ff6b6b;
-            color: white;
+            background: #FFD700;
+            color: #004499;
             border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 15px;
             cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
         }
         
         /* Footer */
         footer {
             background: #1a1a2e;
             color: white;
-            padding: 40px 20px;
-            margin-top: 60px;
+            padding: 30px 15px;
+            margin-top: 40px;
         }
         
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
         }
         
         .footer-section h3 {
-            margin-bottom: 20px;
-            color: #ff6b6b;
+            margin-bottom: 15px;
+            color: #FFD700;
+            font-size: 16px;
         }
         
         .footer-section a {
             display: block;
             color: #999;
             text-decoration: none;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
         
         .footer-section a:hover {
-            color: white;
+            color: #FFD700;
         }
         
         /* Modal */
@@ -264,7 +315,7 @@
             background: rgba(0,0,0,0.5);
             z-index: 1000;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
         }
         
         .modal.show {
@@ -273,17 +324,25 @@
         
         .modal-content {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            width: 100%;
             max-width: 500px;
-            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
         }
         
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            font-size: 18px;
+            flex: 1;
+            padding-right: 10px;
         }
         
         .close-btn {
@@ -291,10 +350,17 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         
         .ticket-options {
-            margin: 20px 0;
+            margin: 15px 0;
         }
         
         .ticket-option {
@@ -303,13 +369,14 @@
             align-items: center;
             padding: 15px;
             border: 2px solid #eee;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 10px;
             cursor: pointer;
         }
         
         .ticket-option:hover, .ticket-option.selected {
-            border-color: #ff6b6b;
+            border-color: #FFD700;
+            background: #FFFEF0;
         }
         
         .ticket-info {
@@ -317,37 +384,44 @@
         }
         
         .ticket-price {
-            color: #ff6b6b;
+            color: #0066cc;
             font-size: 18px;
             font-weight: bold;
         }
         
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            border: 2px solid #ff6b6b;
-            background: white;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
         .checkout-btn {
             width: 100%;
-            background: #ff6b6b;
-            color: white;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #004499;
             border: none;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 16px;
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .event-card {
+                display: flex;
+                flex-direction: row;
+            }
+            
+            .event-image {
+                width: 100px;
+                height: auto;
+                min-height: 100px;
+            }
         }
     </style>
 </head>
@@ -355,42 +429,45 @@
     <!-- Header -->
     <header>
         <div class="header-content">
-            <div class="logo">票票<span>网</span></div>
-            <nav>
-                <a href="#">首页</a>
-                <a href="#">演唱会</a>
-                <a href="#">话剧歌剧</a>
-                <a href="#">体育赛事</a>
-                <a href="#">舞蹈芭蕾</a>
-                <a href="#">我的订单</a>
-            </nav>
-            <div class="search-box">
-                <input type="text" placeholder="搜索演出、赛事...">
-                <button>搜索</button>
+            <div class="top-bar">
+                <div class="logo">Tickety<span></span></div>
+                <div class="user-area">
+                    <span class="user-btn">Sign In</span>
+                </div>
             </div>
+            <nav>
+                <a href="#" class="active">Home</a>
+                <a href="#">Concerts</a>
+                <a href="#">Theater</a>
+                <a href="#">Sports</a>
+                <a href="#">Classical</a>
+                <a href="#">Family</a>
+                <a href="#">My Tickets</a>
+            </nav>
         </div>
     </header>
     
-    <!-- Hero -->
-    <div class="hero">
-        <h1>精选演出 尽在票票网</h1>
-        <p>覆盖演唱会、体育赛事、话剧歌剧等各类精彩演出</p>
+    <!-- Search -->
+    <div class="search-section">
+        <div class="search-box">
+            <input type="text" placeholder="Search events, artists, venues...">
+            <button>Search</button>
+        </div>
     </div>
     
     <!-- Categories -->
     <div class="categories">
-        <div class="category active">全部</div>
-        <div class="category">演唱会</div>
-        <div class="category">话剧歌剧</div>
-        <div class="category">体育赛事</div>
-        <div class="category">舞蹈芭蕾</div>
-        <div class="category">儿童亲子</div>
-        <div class="category">音乐剧</div>
+        <div class="category active">All</div>
+        <div class="category">Concerts</div>
+        <div class="category">Theater</div>
+        <div class="category">Sports</div>
+        <div class="category">Classical</div>
+        <div class="category">Family</div>
     </div>
     
     <!-- Hot Events -->
     <div class="events-section">
-        <div class="section-title">热门演出</div>
+        <div class="section-title">Trending Events</div>
         <div class="events-grid" id="eventsGrid">
             <!-- Events will be inserted here -->
         </div>
@@ -400,30 +477,22 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>关于我们</h3>
-                <a href="#">公司介绍</a>
-                <a href="#">联系方式</a>
-                <a href="#">隐私政策</a>
-                <a href="#">服务条款</a>
+                <h3>About Us</h3>
+                <a href="#">Company</a>
+                <a href="#">Contact</a>
+                <a href="#">Careers</a>
             </div>
             <div class="footer-section">
-                <h3>客户服务</h3>
-                <a href="#">帮助中心</a>
-                <a href="#">购票指南</a>
-                <a href="#">配送说明</a>
-                <a href="#">退换票</a>
+                <h3>Customer Service</h3>
+                <a href="#">Help Center</a>
+                <a href="#">FAQ</a>
+                <a href="#">Refund Policy</a>
             </div>
             <div class="footer-section">
-                <h3>商务合作</h3>
-                <a href="#">商家入驻</a>
-                <a href="#">票务代理</a>
-                <a href="#">广告合作</a>
-            </div>
-            <div class="footer-section">
-                <h3>关注我们</h3>
-                <a href="#">微信公众号</a>
-                <a href="#">微博</a>
-                <a href="#">抖音</a>
+                <h3>Follow Us</h3>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
             </div>
         </div>
     </footer>
@@ -432,16 +501,16 @@
     <div class="modal" id="ticketModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">演出名称</h2>
+                <h2 id="modalTitle">Event Name</h2>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
-            <p id="modalVenue" style="color: #666; margin-bottom: 20px;"></p>
+            <p id="modalVenue" class="modal-date"></p>
             
             <div class="ticket-options" id="ticketOptions">
                 <!-- Ticket options will be inserted here -->
             </div>
             
-            <button class="checkout-btn" onclick="checkout()">立即购票</button>
+            <button class="checkout-btn" onclick="checkout()">Buy Tickets</button>
         </div>
     </div>
 
@@ -450,74 +519,74 @@
         const events = [
             {
                 id: 1,
-                title: "周杰伦2026世界巡回演唱会",
-                date: "2026-04-15",
-                venue: "香港红磡体育馆",
+                title: "Jay Chou World Tour 2026",
+                date: "Apr 15, 2026",
+                venue: "Hong Kong Coliseum",
                 price: 880,
-                category: "演唱会",
+                category: "Concerts",
                 emoji: "🎤"
             },
             {
                 id: 2,
-                title: "五月天诺亚方舟演唱会",
-                date: "2026-04-20",
-                venue: "香港中环海滨活动空间",
+                title: "Mayday Noah's Ark Concert",
+                date: "Apr 20, 2026",
+                venue: "Central Harbourfront",
                 price: 980,
-                category: "演唱会",
+                category: "Concerts",
                 emoji: "🎸"
             },
             {
                 id: 3,
-                title: "经典原版音乐剧《猫》",
-                date: "2026-05-01",
-                venue: "香港文化艺术中心",
+                title: "Cats - Original Musical",
+                date: "May 01, 2026",
+                venue: "Hong Kong Arts Centre",
                 price: 680,
-                category: "音乐剧",
+                category: "Theater",
                 emoji: "🐱"
             },
             {
                 id: 4,
-                title: "2026香港国际七人榄球赛",
-                date: "2026-04-05",
-                venue: "香港大球场",
+                title: "HK Rugby Sevens 2026",
+                date: "Apr 05, 2026",
+                venue: "Hong Kong Stadium",
                 price: 450,
-                category: "体育赛事",
+                category: "Sports",
                 emoji: "🏉"
             },
             {
                 id: 5,
-                title: "芭蕾舞剧《天鹅湖》",
-                date: "2026-05-10",
-                venue: "香港文化中心大剧院",
+                title: "Swan Lake Ballet",
+                date: "May 10, 2026",
+                venue: "Hong Kong Cultural Centre",
                 price: 580,
-                category: "舞蹈芭蕾",
+                category: "Classical",
                 emoji: "🦢"
             },
             {
                 id: 6,
-                title: "陈奕迅FEAR and DREAMS演唱会",
-                date: "2026-06-01",
-                venue: "香港体育馆",
+                title: "Eason Chan Concert 2026",
+                date: "Jun 01, 2026",
+                venue: "Hong Kong Arena",
                 price: 880,
-                category: "演唱会",
+                category: "Concerts",
                 emoji: "🎤"
             },
             {
                 id: 7,
-                title: "悬疑话剧《枕头人》",
-                date: "2026-05-15",
-                venue: "香港艺术中心",
+                title: "The Pillowman - Drama",
+                date: "May 15, 2026",
+                venue: "Hong Kong Arts Centre",
                 price: 380,
-                category: "话剧歌剧",
+                category: "Theater",
                 emoji: "🎭"
             },
             {
                 id: 8,
-                title: "NBA篮球赛中国行",
-                date: "2026-07-20",
-                venue: "广州体育馆",
+                title: "NBA China Games 2026",
+                date: "Jul 20, 2026",
+                venue: "Guangzhou Arena",
                 price: 1280,
-                category: "体育赛事",
+                category: "Sports",
                 emoji: "🏀"
             }
         ];
@@ -525,20 +594,22 @@
         let selectedEvent = null;
         
         // Render events
-        function renderEvents(category = '全部') {
+        function renderEvents(category = 'All') {
             const grid = document.getElementById('eventsGrid');
-            const filtered = category === '全部' ? events : events.filter(e => e.category === category);
+            const filtered = category === 'All' ? events : events.filter(e => e.category === category);
             
             grid.innerHTML = filtered.map(event => `
                 <div class="event-card" onclick="openTicketModal(${event.id})">
-                    <div class="event-image">${event.emoji}</div>
+                    <div class="event-image">
+                        ${event.emoji}
+                        <div class="event-date-badge">${event.date.split(',')[0]}</div>
+                    </div>
                     <div class="event-info">
-                        <div class="event-date">${event.date}</div>
                         <div class="event-title">${event.title}</div>
                         <div class="event-venue">${event.venue}</div>
-                        <div class="event-price">
-                            <div class="price">HK$ ${event.price} <span>起</span></div>
-                            <button class="buy-btn">购票</button>
+                        <div class="event-footer">
+                            <div class="price">HK$ ${event.price} <span>from</span></div>
+                            <button class="buy-btn">Buy</button>
                         </div>
                     </div>
                 </div>
@@ -564,9 +635,9 @@
             
             // Generate ticket options
             const prices = [
-                { name: '标准票', price: selectedEvent.price },
-                { name: 'VIP票', price: selectedEvent.price * 1.5 },
-                { name: '贵宾票', price: selectedEvent.price * 2 }
+                { name: 'Standard', price: selectedEvent.price },
+                { name: 'VIP', price: selectedEvent.price * 1.5 },
+                { name: 'Premium', price: selectedEvent.price * 2 }
             ];
             
             document.getElementById('ticketOptions').innerHTML = prices.map((p, i) => `
@@ -589,9 +660,14 @@
         }
         
         function checkout() {
-            alert('感谢您的购买！订单已生成。');
+            alert('Thank you! Your order has been placed.');
             closeModal();
         }
+        
+        // Close modal when clicking outside
+        document.getElementById('ticketModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
         
         // Initial render
         renderEvents();
